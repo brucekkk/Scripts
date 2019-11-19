@@ -1,5 +1,5 @@
 #!/bin/csh 
-#this sctipt is used for utm convert to lati/long
+#this sctipt is used for utm convert to lati/long, you should change the utm zone and the file path.
 setenv LC_ALL C
 setenv LC_CTYPE C
 setenv LC_COLLATE C
@@ -32,13 +32,13 @@ gmt set FONT_LABEL 6
 #gmtset BASEMAP_AXES WESn   ANNOT_OFFSET_PRIMARY
 
 ##############  UTM to GEOGRAPHICAL coordiante ####################################
-set ZONE = 19
+set ZONE = 19 #change the utm zone here.
 set MERIDIAN = `echo $ZONE | awk '{print int((('$ZONE'*6)-180)-3)}'`
 set UTM_REGION = `echo $MERIDIAN| awk '{printf("%i/%i/%i/%i\n", $1-3,$1+3,-90,0)}' `
 echo MERIDIAN $MERIDIAN 
 echo UTM_REGION $UTM_REGION
 echo 
-set input_txt = MGL1610MC04_geometry_grd_rot_crooked.axon_MC04cmp_xy_m.txt
+set input_txt = MGL1610MC04_geometry_grd_rot_crooked.axon_MC04cmp_xy_m.txt #change your path here
 awk '{if(NR>1) printf("%.12lg %.12lg %d \n",$2,$3,$1)}' $input_txt | \
 gmt mapproject -V -I -Ju$ZONE/1:1 -R$UTM_REGION -C0/0 -F | \
 awk '{printf("%d %.12lg %.12lg \n",$3,$1,$2)}' > MGL1610MC04_geometry_grd_rot_crooked.axon_MC04cmp_xy_m.txt.latlong
